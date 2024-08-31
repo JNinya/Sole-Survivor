@@ -52,15 +52,23 @@ def color(text):
     print(splitText)
 """
 
-accepted_colors = [
+opening_color_codes = [
     "[red]",
     "[green]",
     "[yellow]",
     "[blue]"
 ]
 
+closing_color_codes = [
+    "[/red]",
+    "[/green]",
+    "[/yellow]",
+    "[/blue]"
+]
+
 def color(text):
-    for i in accepted_colors:
+    for i in opening_color_codes:
         if text.find(i) != -1:
             print("color code found")
+            
         
