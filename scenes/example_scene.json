@@ -1,0 +1,66 @@
+{
+    "states": {
+        "LIGHTS_ON": false,
+        "SECRET_REVEALED": false,
+        "FIRST_TIME": true,
+        "DOORS_LOCKED": false,
+        "N_DOOR_LOCKED": false,
+        "S_DOOR_LOCKED": false,
+        "W_DOOR_LOCKED": false,
+        "E_DOOR_LOCKED": false,
+        "TERMINAL_LOCKED": false
+    },
+    
+    "interactions": {
+        "Turn on the light": {
+            "requirements": {
+                "LIGHTS_ON": false
+            },
+            "updates": {
+                "LIGHTS_ON": true
+            }
+        },
+
+        "Turn off the light": {
+            "requirements": {
+                "LIGHTS_ON": true
+            },
+            "updates": {
+                "LIGHTS_ON": false
+            }
+        },
+
+        "Exit the room": {
+            "requirements": {
+                "DOORS_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.ROOM": "next_room_1"
+            }
+        }
+    },
+    
+    "prompts": [
+        {
+            "text": "The player looks around and sees a light switch.",
+            "requirements": {
+                "LIGHTS_ON": false,
+                "FIRST_TIME": true
+            }
+        },
+
+        {
+            "text": "The yellow fluorescent light bulb emits a horrible light. Visibility is low, but you see enough to know that you need to get out.",
+            "requirements": {
+                "LIGHTS_ON": true
+            }
+        }
+    ],
+
+    "adjacent_scenes": {
+        "north scene": "next_room_1",
+        "south scene": "next_room_2",
+        "west scene": "next_room_3"
+    }
+}
