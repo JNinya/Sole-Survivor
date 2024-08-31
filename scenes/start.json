@@ -16,7 +16,7 @@
         },
 
         {
-            "text": "The yellow fluorescent light bulb emits a horrible light. Visibility is low, but you see enough to know that you need to get out.",
+            "text": "You're back in the starting room.",
             "requirements": {
                 "FIRST_TIME": false
             }
@@ -24,7 +24,14 @@
     ],
 
     "interactions": {
-
+        "Exit the room and re-enter": {
+            "requirements": {
+                "FIRST_TIME": true
+            },
+            "updates": {
+                "FIRST_TIME": false
+            }
+        }
     },
 
     "adjacent_scenes": {

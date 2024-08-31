@@ -165,6 +165,7 @@ def isClosingColorTag(tag: str) -> bool:
 
 #debug/testing
 
+
 test_text1 = "This is test text to check the [yellow]color of printed[/yellow] text. This is a second [red]color[/red] code"
 test_text2 = "[yellow]This is test text to check the [green]color[/green] of printed text. This is a second [red]color[/red] code[/yellow]"
 

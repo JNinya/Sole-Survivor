@@ -10,6 +10,12 @@ import os
 import json
 import fh
 
+
+
+class GlobalContext():
+    pass
+
+
 # TODO: determine whether this is necessary/wanted
 class Prompt:
     def __init__(self, prompts_dict):
@@ -52,12 +58,12 @@ class Scene:
         interactions = {}
         for interaction in self.interactions:
             interact_data = self.interactions[interaction]
-            if interactionFitsState(interact_data, self):
+            if interactionFitsState(interact_data, self, self.globalctx.scenes):
                 interactions[interaction] = interact_data
         return interactions
     
 # end def Scene
-
+"""
 class GlobalContext:
     # scenes are either loaded or a directory name
     def __init__(self, scenes: dict[str, Scene] | str):
@@ -80,6 +86,31 @@ class GlobalContext:
         if actual_scene is None:
             raise ValueError("Warning") # TODO: change to warning for setting void scene
         self.active_scene = actual_scene
+"""
+class GlobalContext:
+    # scenes are either loaded or a directory name
+    def __init__(self, scenes: dict | str):
+        if isinstance(scenes, dict):
+            for scene in scenes.values():
+                scene.globalctx = self
+            self.scenes = scenes
+        elif isinstance(scenes, str):
+            self.scenes = readScenes(scenes)
+
+        self.active_scene: Scene = None
+
+    def setActiveScene(self, scene: Scene | str):
+        actual_scene = None
+        if isinstance(scene, Scene):
+            actual_scene = scene
+        elif isinstance(scene, str):
+            actual_scene = self.scenes[scene]
+        
+        if actual_scene is None:
+            raise ValueError("Warning") # TODO: change to warning for setting void scene
+        self.active_scene = actual_scene
+
+
 
 
 # Returns boolean indicating whether the prompt meets state requirements
