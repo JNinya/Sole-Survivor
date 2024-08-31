@@ -20,7 +20,9 @@ class Prompt:
         return f"Text: {self.text}\nRequirements: {self.requirements}"
 
 class Scene:
-    def __init__(self, name, json_dict):
+    def __init__(self, name, json_dict, globalctx: GlobalContext = None):
+        self.globalctx: GlobalContext = globalctx
+
         self.name: str = name.replace(".json", "")
         self.states = json_dict["states"]
         self.interactions = json_dict["interactions"]
@@ -39,7 +41,7 @@ class Scene:
     def nextPrompt(self):
         # For each requirement, check if current states match prompt required states
         for prompt in self.prompts:
-            if promptFitsState(prompt, self):
+            if promptFitsState(prompt, self, self.globalctx.scenes):
                 return prompt
         # TODO: raise custom NoPromptFoundError
         print(f"WARNING: no prompt was found to fit required state for scene {self.name}")
@@ -57,8 +59,15 @@ class Scene:
 # end def Scene
 
 class GlobalContext:
-    def __init__(self, scenes):
-        self.scenes: dict[str, Scene] = scenes
+    # scenes are either loaded or a directory name
+    def __init__(self, scenes: dict[str, Scene] | str):
+        if isinstance(scenes, dict[str, Scene]):
+            for scene in scenes.values():
+                scene.globalctx = self
+            self.scenes = scenes
+        elif isinstance(scenes, str):
+            self.scenes = readScenes(scenes)
+
         self.active_scene: Scene = None
 
     def setActiveScene(self, scene: Scene | str):
@@ -66,7 +75,7 @@ class GlobalContext:
         if isinstance(scene, Scene):
             actual_scene = scene
         elif isinstance(scene, str):
-            actual_scene = scenes[scene]
+            actual_scene = self.scenes[scene]
         
         if actual_scene is None:
             raise ValueError("Warning") # TODO: change to warning for setting void scene
@@ -74,7 +83,7 @@ class GlobalContext:
 
 
 # Returns boolean indicating whether the prompt meets state requirements
-def promptFitsState(prompt, scene):
+def promptFitsState(prompt, scene, scenes):
     for req_state in prompt["requirements"]:
         state_val = readState(req_state, scene, scenes)
         #print(req_state, prompt["requirements"][req_state], state_val) # DEBUG
@@ -83,7 +92,7 @@ def promptFitsState(prompt, scene):
     return True
 
 # Returns boolean indicating whether the interaction meets state requirements
-def interactionFitsState(interact_data, scene):
+def interactionFitsState(interact_data, scene, scenes):
     for req_state in interact_data["requirements"]:
         state_val = readState(req_state, scene, scenes)
         if interact_data["requirements"][req_state] != state_val:
@@ -151,8 +160,8 @@ def setState(state_path, value, scene, scenes_dict):
 # Debug/Testing
 
 # Load scenes from directory
-scenes = readScenes("scenes")
-scene: Scene = scenes["start"]
+#scenes = readScenes("scenes")
+#scene: Scene = scenes["start"]
 
 #print(readState("LIGHTS_ON", scene, scenes))
 #prompt = scene.nextPrompt()
