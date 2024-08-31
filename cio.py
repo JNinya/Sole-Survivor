@@ -1,3 +1,4 @@
+
 #fill_char = "█"
 fill_char = "|"
 empty_char = " "

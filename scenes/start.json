@@ -1,10 +1,10 @@
 {
     "states": {
         "FIRST_TIME": true,
-        "N_DOOR_LOCKED": false,
-        "S_DOOR_LOCKED": false,
-        "W_DOOR_LOCKED": false,
-        "E_DOOR_LOCKED": false
+        "N_DOOR_LOCKED": true,
+        "S_DOOR_LOCKED": true,
+        "W_DOOR_LOCKED": true,
+        "E_DOOR_LOCKED": true
     },
 
     "prompts": [
@@ -33,9 +33,19 @@
             }
         },
 
-        "Exit the room and re-entersadasds": {
+        "Unlock the door, then exit the room and re-enter": {
             "requirements": {
                 "FIRST_TIME": true
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "N_DOOR_LOCKED": false
+            }
+        },
+
+        "Go through the door": {
+            "requirements": {
+                "N_DOOR_LOCKED": false
             },
             "updates": {
                 "FIRST_TIME": false
