@@ -26,7 +26,7 @@ class Prompt:
         return f"Text: {self.text}\nRequirements: {self.requirements}"
 
 class Scene:
-    def __init__(self, name, json_dict, globalctx: GlobalContext = None):
+    def __init__(self, name, json_dict: dict, globalctx: GlobalContext = None):
         self.globalctx: GlobalContext = globalctx
 
         self.name: str = name.replace(".json", "")
@@ -37,7 +37,7 @@ class Scene:
         #for json_prompt in json_dict["prompts"]:
         #    self.prompts.append(Prompt(json_prompt))
 
-        self.adjacent_scenes = json_dict["adjacent_scenes"]
+        self.adjacent_scenes = json_dict.get("adjacent_scenes", None)
     
     def __str__(self):
         return f"States:\n{self.states}\n\nInteractions:\n{self.interactions}\n\nPrompts:\n{self.prompts}\n\nAdjacent scenes:\n{self.adjacent_scenes}"
@@ -112,7 +112,6 @@ class GlobalContext:
 
 
 
-
 # Returns boolean indicating whether the prompt meets state requirements
 def promptFitsState(prompt, scene, scenes):
     for req_state in prompt["requirements"]:
@@ -149,16 +148,16 @@ def readScenes(scenes_dir):
     return scene_map
 
 # Update game state based on interaction selected
-def updateStates(interaction, scene, scenes_dict):
+def updateStates(interaction, globalctx: GlobalContext):
     for update in interaction["updates"]:
-        setState(update, interaction["updates"][update], scene, scenes_dict)
+        setState(update, interaction["updates"][update], globalctx)
 
 # Get state value from local, scene, or global path
 # Examples: "global.scene", "lab_scene_3.LIGHTS_ON", "LIGHTS_ON"
 # state_path is the string path to get the state
 # scene is the current active scene
 # scenes_dict is all the scenes to be accessed
-def readState(state_path: str, scene: Scene, scenes_dict: list[Scene]):
+def readState(state_path: str, globalctx: GlobalContext):
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
@@ -166,13 +165,13 @@ def readState(state_path: str, scene: Scene, scenes_dict: list[Scene]):
             raise NotImplementedError("Need to query global state!")
         else:
             # query scene state
-            return scenes_dict[split_path[0]].states[split_path[1]]
+            return globalctx.scenes[split_path[0]].states[split_path[1]]
 
     else:
         # local path
-        return scene.states[state_path]
+        return globalctx.active_scene.states[state_path]
 
-def setState(state_path, value, scene, scenes_dict):
+def setState(state_path, value, globalctx: GlobalContext):
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
@@ -180,11 +179,11 @@ def setState(state_path, value, scene, scenes_dict):
             raise NotImplementedError("Need to set global state!")
         else:
             # set scene state
-            scenes_dict[split_path[0]].states[split_path[1]] = value
+            globalctx.scenes[split_path[0]].states[split_path[1]] = value
 
     else:
         # local path
-        scene.states[state_path] = value
+        globalctx.active_scene.states[state_path] = value
 
 
 """
