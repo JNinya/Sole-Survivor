@@ -44,9 +44,11 @@ def printActiveScene():
 #activates interactions in current scene based on number input
 def interact(interaction_number):
 
+    interaction_number = int(interaction_number)
+
     #gets interactions that fit requirements
-    interactions_list = list(globalctx.active_scene.nextInteractions().keys())
-    
+    interactions_list = list(globalctx.active_scene.nextInteractions().values())
+
     updateStates(interactions_list[interaction_number-1], globalctx)
 
 
