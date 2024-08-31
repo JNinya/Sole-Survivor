@@ -47,7 +47,7 @@ class Scene:
     def nextPrompt(self):
         # For each requirement, check if current states match prompt required states
         for prompt in self.prompts:
-            if promptFitsState(prompt, self, self.globalctx.scenes):
+            if promptFitsState(prompt, self, self.globalctx):
                 return prompt
         # TODO: raise custom NoPromptFoundError
         print(f"WARNING: no prompt was found to fit required state for scene {self.name}")
@@ -58,7 +58,7 @@ class Scene:
         interactions = {}
         for interaction in self.interactions:
             interact_data = self.interactions[interaction]
-            if interactionFitsState(interact_data, self, self.globalctx.scenes):
+            if interactionFitsState(interact_data, self, self.globalctx):
                 interactions[interaction] = interact_data
         return interactions
     
@@ -113,18 +113,18 @@ class GlobalContext:
 
 
 # Returns boolean indicating whether the prompt meets state requirements
-def promptFitsState(prompt, scene, scenes):
+def promptFitsState(prompt, scene, globalctx: GlobalContext):
     for req_state in prompt["requirements"]:
-        state_val = readState(req_state, scene, scenes)
+        state_val = readState(req_state, globalctx.scenes, scene)
         #print(req_state, prompt["requirements"][req_state], state_val) # DEBUG
         if prompt["requirements"][req_state] != state_val:
             return False
     return True
 
 # Returns boolean indicating whether the interaction meets state requirements
-def interactionFitsState(interact_data, scene, scenes):
+def interactionFitsState(interact_data, scene, globalctx: GlobalContext):
     for req_state in interact_data["requirements"]:
-        state_val = readState(req_state, scene, scenes)
+        state_val = readState(req_state, globalctx.scenes, scene)
         if interact_data["requirements"][req_state] != state_val:
             return False
     return True
@@ -157,7 +157,9 @@ def updateStates(interaction, globalctx: GlobalContext):
 # state_path is the string path to get the state
 # scene is the current active scene
 # scenes_dict is all the scenes to be accessed
-def readState(state_path: str, globalctx: GlobalContext):
+def readState(state_path: str, globalctx: GlobalContext, active_scene: Scene = None):
+    active_scene = active_scene if active_scene is not None else globalctx.active_scene
+
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
@@ -169,9 +171,11 @@ def readState(state_path: str, globalctx: GlobalContext):
 
     else:
         # local path
-        return globalctx.active_scene.states[state_path]
+        return active_scene.states[state_path]
 
-def setState(state_path, value, globalctx: GlobalContext):
+def setState(state_path, value, globalctx: GlobalContext, active_scene: Scene = None):
+    active_scene = active_scene if active_scene is not None else globalctx.active_scene
+    
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
@@ -183,7 +187,7 @@ def setState(state_path, value, globalctx: GlobalContext):
 
     else:
         # local path
-        globalctx.active_scene.states[state_path] = value
+        active_scene.states[state_path] = value
 
 
 """

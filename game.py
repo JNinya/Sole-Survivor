@@ -17,16 +17,10 @@ globalctx.setActiveScene("start")
 
 #clears the terminal
 os.system('cls')
-#selects the text for the available interactions
-interactions_list = list(globalctx.active_scene.nextInteractions().keys())
+#selects the text for the aviable interactions
+interactions_text = list(globalctx.active_scene.nextInteractions().keys())[0]
 
-#print prompt
+#print the things to the terminal
 print(globalctx.active_scene.nextPrompt()["text"])
-
 print("")
-
-#print interactions
-for i in range(len(interactions_list)):
-    print(f"{i+1}: {interactions_list[i]}")
-
-
+print(f"1: {interactions_text}")
