@@ -31,6 +31,15 @@
             "updates": {
                 "FIRST_TIME": false
             }
+        },
+
+        "Exit the room and re-entersadasds": {
+            "requirements": {
+                "FIRST_TIME": true
+            },
+            "updates": {
+                "FIRST_TIME": false
+            }
         }
     },
 

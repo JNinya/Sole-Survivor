@@ -89,7 +89,7 @@ class GlobalContext:
 """
 class GlobalContext:
     # scenes are either loaded or a directory name
-    def __init__(self, scenes: dict | str):
+    def __init__(self, scenes: dict[str, Scene] | str):
         if isinstance(scenes, dict):
             for scene in scenes.values():
                 scene.globalctx = self
