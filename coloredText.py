@@ -66,9 +66,47 @@ closing_color_codes = [
     "[/blue]"
 ]
 
+#Input text with inline custom color codes and output ANSI color codes
 def color(text):
-    for i in opening_color_codes:
-        if text.find(i) != -1:
-            print("color code found")
-            
-        
+    actual_text = text
+    for i in range(len(opening_color_codes)):
+        current_color_code = opening_color_codes[i]
+        if actual_text.find(current_color_code) != -1:
+            #print("opening color code found")
+            divided_string = actual_text.split(current_color_code)
+            #print(divided_string)
+            #print(i)
+            second_half_of_string = divided_string[1]
+            #print(second_half_of_string)
+            #print(second_half_of_string.find(closing_color_codes[i]))
+            second_half_of_string = second_half_of_string.split(closing_color_codes[i])
+            #print(second_half_of_string)
+            divided_string.pop()
+            divided_string.append(second_half_of_string[0])
+            divided_string.append(second_half_of_string[1])
+            #print(divided_string)
+            divided_string[1] = eval(getColorFromColorCode(current_color_code))(divided_string[1])
+            #print(divided_string)
+            final_string = divided_string[0] + divided_string[1] + divided_string [2]
+            actual_text = final_string
+    return actual_text
+
+
+
+def getColorFromColorCode(code):
+    code = code.split("[")
+    code = code[1]
+    code = code.split("]")
+    code = code[0]
+    return code
+
+
+
+
+#debug/testing
+
+test_text1 = "This is test text to check the [yellow]color of printed[/yellow] text. This is a second [red]color[/red] code"
+test_text2 = "[yellow]This is test text to check the [green]color[/green] of printed text. This is a second [red]color[/red] code[/yellow]"
+
+print(color(test_text1))
+print(color(test_text2))
