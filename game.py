@@ -1,7 +1,6 @@
-import fh
-from cio import *
-from coloredText import *
+from sceneManager import *
 
-text = "THis is test text to test the [red]color[/red] codes"
+scenes = readScenes("scenes")
+active_scene: Scene = scenes["start"]
 
-color(text)
+print(active_scene.nextPrompt())

@@ -147,7 +147,7 @@ def setState(state_path, value, scene, scenes_dict):
         scene.states[state_path] = value
 
 
-
+"""
 # Debug/Testing
 
 # Load scenes from directory
@@ -171,3 +171,4 @@ updateStates(interactions["Turn on the light"], scene, scenes)
 print("\n")
 print(scene.nextPrompt()["text"])
 print(scene.nextInteractions())
+"""
