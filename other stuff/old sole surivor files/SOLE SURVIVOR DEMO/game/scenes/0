@@ -1,0 +1,7 @@
+You find yourself in an abandoned facility. The lights are off and you can barely see with the glow of the emergency lights. There is a computer in the room. It seems to be functional. There is an exit door behind you but it is locked with some sort of electronic lock.
+
+1: Log onto the facility's computer system
+2: Turn the lights on
+;
+1>1
+2>10

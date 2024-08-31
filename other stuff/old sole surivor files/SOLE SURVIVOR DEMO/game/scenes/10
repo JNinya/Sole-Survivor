@@ -1,0 +1,7 @@
+You find an industrial switch and turn on the lights. You can see better now. With the lights on, you notice that the ceiling is saturated with a liquid. This liquid is also dripping down the walls.
+
+1: Investigate the liquid
+2: Turn the lights back off
+;
+1>12
+2>11
