@@ -1,7 +1,7 @@
 {
     "states": {
         "FIRST_TIME": true,
-        "N_DOOR_LOCKED": false,
+        "N_DOOR_LOCKED": true,
         "S_DOOR_LOCKED": true,
         "W_DOOR_LOCKED": true,
         "E_DOOR_LOCKED": true
@@ -9,7 +9,7 @@
 
     "prompts": [
         {
-            "text": "Welcome to sole survivor!",
+            "text": "youre in the first scene",
             "requirements": {
                 "FIRST_TIME": true
             }
@@ -35,8 +35,7 @@
 
         "Unlock the door, then exit the room and re-enter": {
             "requirements": {
-                "FIRST_TIME": true,
-                "N_DOOR_LOCKED": true
+                "FIRST_TIME": true
             },
             "updates": {
                 "FIRST_TIME": false,
@@ -49,8 +48,7 @@
                 "N_DOOR_LOCKED": false
             },
             "updates": {
-                "FIRST_TIME": false,
-                "global.active_scene": "first_scene"
+                "FIRST_TIME": false
             }
         }
     },
