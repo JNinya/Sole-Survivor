@@ -1,8 +1,8 @@
 """
 Functions:
 
-readRoom(rooms_dir, room_name)
-readRooms(rooms_dir)
+readscene(scenes_dir, scene_name)
+readscenes(scenes_dir)
 
 """
 
@@ -19,9 +19,9 @@ class Prompt:
     def __str__(self):
         return f"Text: {self.text}\nRequirements: {self.requirements}"
 
-class Room:
+class Scene:
     def __init__(self, name, json_dict):
-        self.name = name.replace(".json", "")
+        self.name: str = name.replace(".json", "")
         self.states = json_dict["states"]
         self.interactions = json_dict["interactions"]
         
@@ -29,10 +29,10 @@ class Room:
         #for json_prompt in json_dict["prompts"]:
         #    self.prompts.append(Prompt(json_prompt))
 
-        self.adjacent_rooms = json_dict["adjacent_rooms"]
+        self.adjacent_scenes = json_dict["adjacent_scenes"]
     
     def __str__(self):
-        return f"States:\n{self.states}\n\nInteractions:\n{self.interactions}\n\nPrompts:\n{self.prompts}\n\nAdjacent Rooms:\n{self.adjacent_rooms}"
+        return f"States:\n{self.states}\n\nInteractions:\n{self.interactions}\n\nPrompts:\n{self.prompts}\n\nAdjacent scenes:\n{self.adjacent_scenes}"
     
     # Selects the next prompt based on current states
     # Returns a string containing the text to display
@@ -42,7 +42,7 @@ class Room:
             if promptFitsState(prompt, self):
                 return prompt
         # TODO: raise custom NoPromptFoundError
-        print(f"WARNING: no prompt was found to fit required state for room {self.name}")
+        print(f"WARNING: no prompt was found to fit required state for scene {self.name}")
         return None
 
     # Returns an array of interactions available based on current states
@@ -53,102 +53,121 @@ class Room:
             if interactionFitsState(interact_data, self):
                 interactions[interaction] = interact_data
         return interactions
+    
+# end def Scene
+
+class GlobalContext:
+    def __init__(self, scenes):
+        self.scenes: dict[str, Scene] = scenes
+        self.active_scene: Scene = None
+
+    def setActiveScene(self, scene: Scene | str):
+        actual_scene = None
+        if isinstance(scene, Scene):
+            actual_scene = scene
+        elif isinstance(scene, str):
+            actual_scene = scenes[scene]
+        
+        if actual_scene is None:
+            raise ValueError("Warning") # TODO: change to warning for setting void scene
+        self.active_scene = actual_scene
+
 
 # Returns boolean indicating whether the prompt meets state requirements
-def promptFitsState(prompt, room):
+def promptFitsState(prompt, scene):
     for req_state in prompt["requirements"]:
-        state_val = readState(req_state, room, rooms)
+        state_val = readState(req_state, scene, scenes)
         #print(req_state, prompt["requirements"][req_state], state_val) # DEBUG
         if prompt["requirements"][req_state] != state_val:
             return False
     return True
 
 # Returns boolean indicating whether the interaction meets state requirements
-def interactionFitsState(interact_data, room):
+def interactionFitsState(interact_data, scene):
     for req_state in interact_data["requirements"]:
-        state_val = readState(req_state, room, rooms)
+        state_val = readState(req_state, scene, scenes)
         if interact_data["requirements"][req_state] != state_val:
             return False
     return True
 
-# Read room file as Room object
-def readRoom(rooms_dir, room_name):
-    raw_text = fh.read(f"{rooms_dir}/{room_name}")
+# Read scene file as scene object
+def readScene(scenes_dir, scene_name):
+    raw_text = fh.read(f"{scenes_dir}/{scene_name}")
     json_dict = json.loads(raw_text)
-    room = Room(room_name, json_dict)
+    scene = Scene(scene_name, json_dict)
 
-    return room
+    return scene
 
 
-# Read all rooms in a directory into a map of string keys (room names) and Room values (room data)
-def readRooms(rooms_dir):
-    room_map = {}
-    for file in os.listdir(rooms_dir):
+# Read all scenes in a directory into a map of string keys (scene names) and scene values (scene data)
+def readScenes(scenes_dir):
+    scene_map = {}
+    for file in os.listdir(scenes_dir):
         if file.endswith(".json"):
-            room_map[file.replace(".json", "")] = readRoom(rooms_dir, file)
+            scene_map[file.replace(".json", "")] = readScene(scenes_dir, file)
 
-    return room_map
+    return scene_map
 
 # Update game state based on interaction selected
-def updateState(interaction, room, rooms_dict):
+def updateStates(interaction, scene, scenes_dict):
     for update in interaction["updates"]:
-        setState(update, interaction["updates"][update], room, rooms_dict)
+        setState(update, interaction["updates"][update], scene, scenes_dict)
 
-# Get state value from local, room, or global path
-# Examples: "global.ROOM", "lab_room_3.LIGHTS_ON", "LIGHTS_ON"
+# Get state value from local, scene, or global path
+# Examples: "global.scene", "lab_scene_3.LIGHTS_ON", "LIGHTS_ON"
 # state_path is the string path to get the state
-# room is the current active room
-# rooms_dict is all the rooms to be accessed
-def readState(state_path: str, room: Room, rooms_dict: list[Room]):
+# scene is the current active scene
+# scenes_dict is all the scenes to be accessed
+def readState(state_path: str, scene: Scene, scenes_dict: list[Scene]):
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
             # query global state
             raise NotImplementedError("Need to query global state!")
         else:
-            # query room state
-            return rooms_dict[split_path[0]].states[split_path[1]]
+            # query scene state
+            return scenes_dict[split_path[0]].states[split_path[1]]
 
     else:
         # local path
-        return room.states[state_path]
+        return scene.states[state_path]
 
-def setState(state_path, value, room, rooms_dict):
+def setState(state_path, value, scene, scenes_dict):
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
             # set global state
             raise NotImplementedError("Need to set global state!")
         else:
-            # set room state
-            rooms_dict[split_path[0]].states[split_path[1]] = value
+            # set scene state
+            scenes_dict[split_path[0]].states[split_path[1]] = value
 
     else:
         # local path
-        room.states[state_path] = value
+        scene.states[state_path] = value
 
 
 
 # Debug/Testing
 
-# Load rooms from directory
-rooms = readRooms("rooms")
-room: Room = rooms["start"]
+# Load scenes from directory
+scenes = readScenes("scenes")
+scene: Scene = scenes["start"]
 
-#print(readState("LIGHTS_ON", room, rooms))
-#prompt = room.nextPrompt()
+#print(readState("LIGHTS_ON", scene, scenes))
+#prompt = scene.nextPrompt()
 
 # Print prompt and interactions based on initial state
-# For lab_room_3, I set the lights to initially be on 
-print(room.nextPrompt()["text"])
-interactions = room.nextInteractions()
+# For lab_scene_3, I set the lights to initially be on 
+print(scene.nextPrompt()["text"])
+interactions = scene.nextInteractions()
 print(interactions)
 
 # This is magic right here. The first interaction is the light switch interaction,
 # so let's update the state based on that interaction
-updateState(interactions["Turn on the light"], room, rooms)
+updateStates(interactions["Turn on the light"], scene, scenes)
 
 # Let's print the new state results and see!
 print("\n")
-print(room.nextPrompt()["text"])
-print(room.nextInteractions())
+print(scene.nextPrompt()["text"])
+print(scene.nextInteractions())
