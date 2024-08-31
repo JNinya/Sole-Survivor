@@ -70,8 +70,7 @@ while True:
 #IDEAS
 
 """
-activateInteraction("Exit the room and re-enter", "example_scene")
-
-
-globalctx.active_scene.activateInteraction("Exit the room and re-enter")
+Add support for if the player inputs something other than a number or an out of range number
+impletment changing of states with global.active_state
+add support for math operators in interaction requirements
 """
