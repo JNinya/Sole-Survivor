@@ -2,6 +2,27 @@
 Change the color of printed text
 """
 
+from collections import deque
+from enum import Enum
+
+class ColorCode(Enum):
+    CLEAR   = "\033[0m",
+
+    RED     = "\033[31m",
+    GREEN   = "\033[32m",
+    YELLOW  = "\033[33m",
+    BLUE    = "\033[34m",
+    MAGENTA = "\033[35m",
+    CYAN    = "\033[36m",
+    WHITE   = "\033[37m",
+    LIGHT_RED     = "\033[31;1m",
+    LIGHT_GREEN   = "\033[32;1m",
+    LIGHT_YELLOW  = "\033[33;1m",
+    LIGHT_BLUE    = "\033[34;1m",
+    LIGHT_MAGENTA = "\033[35;1m",
+    LIGHT_CYAN    = "\033[36;1m",
+    LIGHT_WHITE   = "\033[37;1m",
+
 def red(text):
     return f"\u001b[31m{text}\u001b[0m"
 
@@ -44,7 +65,7 @@ def lightCyan(text):
 def lightWhite(text):
     return f"\u001b[37;1m{text}\u001b[0m"
 
-"""MEssing around with in-line color codes:
+"""Messing around with in-line color codes:
 def color(text):
     splitText = text.split("[")
     for i in range(len(splitText)):
@@ -85,28 +106,76 @@ def color(text):
             divided_string.append(second_half_of_string[0])
             divided_string.append(second_half_of_string[1])
             #print(divided_string)
-            divided_string[1] = eval(getColorFromColorCode(current_color_code))(divided_string[1])
+            divided_string[1] = eval(getColorFromColorTag(current_color_code))(divided_string[1])
             #print(divided_string)
             final_string = divided_string[0] + divided_string[1] + divided_string [2]
             actual_text = final_string
     return actual_text
 
 
+# use stack to keep track of colors
+# read string linearly
+# when encountering open tag, push new color and replace with color code
+# when encountering close tag, pop color and apply top-of-stack color code (white if empty)
 
-def getColorFromColorCode(code):
-    code = code.split("[")
-    code = code[1]
-    code = code.split("]")
-    code = code[0]
-    return code
+# TODO: update color codes with styles and other customizations
+def gabeColor(text: str, default_color: ColorCode = ColorCode.WHITE):
+    text_list: list[str] = [] # recompile text after replacing color codes
+    color_stack = deque()
+    text_begin = 0
+    tag_begin = 0
+    tag_end = 0
+    while (tag_begin := text.find('|', tag_end)) != -1:
+        tag_end = text.find('|', tag_begin + 1)
+        tag = text[tag_begin:tag_end+1]
+        
+        #print(f"text_begin: {text_begin}, tag_begin: {tag_begin}, tag_end: {tag_end}")
+        #print(tag)
+        
+        color_enum = default_color
+        if not isClosingColorTag(tag):    
+            color = getColorFromColorTag(tag)
+            color_enum = ColorCode[color.upper()]
+            color_stack.append(color_enum)
+        else:
+            color_stack.pop()
+            color_enum = color_stack[-1] if len(color_stack) > 0 else default_color
+
+        text_list.append(text[text_begin:tag_begin])
+        text_list.append(color_enum.value[0])
+
+        tag_end += 1
+        text_begin = tag_end
+
+    text_list.append(text[text_begin:]) # append rest of text after final tag
+    compiled_text = "".join(text_list)
+    print(compiled_text)
 
 
+def getColorFromColorTag(tag: str) -> str: # example: |yellow| or |/yellow|
+    first_char = 1 if tag[1] != '/' else 2
+    color = tag[first_char:-1]
+    return color
 
+def isClosingColorTag(tag: str) -> bool:
+    # efficient because left side is faster, but right side guarentees tag can find closing indicator
+    # right side of bool expression isn't evaluated unless left side fails
+    # this may not be necessary though
+    return tag[1] == '/' or tag.find('/') != -1
 
 #debug/testing
 
 test_text1 = "This is test text to check the [yellow]color of printed[/yellow] text. This is a second [red]color[/red] code"
 test_text2 = "[yellow]This is test text to check the [green]color[/green] of printed text. This is a second [red]color[/red] code[/yellow]"
 
-print(color(test_text1))
-print(color(test_text2))
+new_text1 = "This is test text to check the |yellow|color of printed|/yellow| text. This is a second |red|color|/red| code"
+new_text2 = "|yellow|This is test text to check the |green|color|/green| of printed text. This is a second |red|color|/red| code|/yellow|"
+gabe_text3 = "|green|Hello, world! |magenta||blue||red|Welcum to|/red| or epicc gam mad|/blue| byyyy el jacque|/magenta| and el gabo|/green|"
+
+gabeColor(new_text2)
+gabeColor(new_text1)
+gabeColor(gabe_text3)
+
+
+#print(color(test_text1))
+#print(color(test_text2))
