@@ -2,9 +2,9 @@
     "states": {
         "FIRST_TIME": true,
         "N_DOOR_LOCKED": false,
-        "S_DOOR_LOCKED": true,
-        "W_DOOR_LOCKED": true,
-        "E_DOOR_LOCKED": true
+        "S_DOOR_LOCKED": null,
+        "W_DOOR_LOCKED": false,
+        "E_DOOR_LOCKED": false
     },
 
     "prompts": [

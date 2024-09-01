@@ -1,0 +1,30 @@
+{
+    "states": {
+        "FIRST_TIME": true,
+        "N_DOOR_LOCKED": null,
+        "S_DOOR_LOCKED": false,
+        "W_DOOR_LOCKED": false,
+        "E_DOOR_LOCKED": null
+    },
+
+    "prompts": [
+        {
+            "text": "You are in the workshop.",
+            "requirements": {
+
+            }
+        }
+    ],
+
+    "interactions": {
+        "Leave workshop": {
+            "requirements": {
+                "S_DOOR_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "hallway1"
+            }
+        }
+    }
+}

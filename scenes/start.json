@@ -10,7 +10,7 @@
 
     "prompts": [
         {
-            "text": "Welcome to sole survivor! First you need to WAKE UP",
+            "text": "Welcome to sole survivor! First you need to WAKE UP.",
             "requirements": {
                 "AWAKE": false
             }
