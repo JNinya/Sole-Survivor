@@ -1,0 +1,50 @@
+{
+    "states": {
+        "FIRST_TIME": true,
+        "N_DOOR_LOCKED": false,
+        "S_DOOR_LOCKED": true,
+        "W_DOOR_LOCKED": true,
+        "E_DOOR_LOCKED": true
+    },
+
+    "prompts": [
+        {
+            "text": "You are in a hallway.",
+            "requirements": {
+
+            }
+        }
+    ],
+
+    "interactions": {
+        "Enter the starting room": {
+            "requirements": {
+                "W_DOOR_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "start"
+            }
+        },
+
+        "Enter the computer room": {
+            "requirements": {
+                "E_DOOR_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "computer_room"
+            }
+        },
+
+        "Continue ahead to the workshop": {
+            "requirements": {
+                "N_DOOR_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "workshop"
+            }
+        }
+    }
+}

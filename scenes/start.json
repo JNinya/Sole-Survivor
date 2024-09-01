@@ -1,15 +1,23 @@
 {
     "states": {
         "FIRST_TIME": true,
-        "N_DOOR_LOCKED": false,
-        "S_DOOR_LOCKED": true,
-        "W_DOOR_LOCKED": true,
-        "E_DOOR_LOCKED": true
+        "AWAKE": false,
+        "N_DOOR_LOCKED": null,
+        "S_DOOR_LOCKED": null,
+        "W_DOOR_LOCKED": null,
+        "E_DOOR_LOCKED": false
     },
 
     "prompts": [
         {
-            "text": "Welcome to sole survivor! Your goal is to escape the facility",
+            "text": "Welcome to sole survivor! First you need to WAKE UP",
+            "requirements": {
+                "AWAKE": false
+            }
+        },
+        
+        {
+            "text": "Your goal is to escape the facility.",
             "requirements": {
                 "FIRST_TIME": true
             }
@@ -24,33 +32,23 @@
     ],
 
     "interactions": {
-        "Exit the room and re-enter": {
+        "Wake up": {
             "requirements": {
-
+                "AWAKE": false
             },
             "updates": {
-                "FIRST_TIME": false
+                "AWAKE": true
             }
         },
 
-        "Unlock the door, then exit the room and re-enter": {
+        "Leave the room": {
             "requirements": {
-                "FIRST_TIME": true,
-                "N_DOOR_LOCKED": true
+                "E_DOOR_LOCKED": false,
+                "AWAKE": true
             },
             "updates": {
                 "FIRST_TIME": false,
-                "N_DOOR_LOCKED": false
-            }
-        },
-
-        "Go through the door": {
-            "requirements": {
-                "N_DOOR_LOCKED": false
-            },
-            "updates": {
-                "FIRST_TIME": false,
-                "global.active_scene": "first_scene"
+                "global.active_scene": "hallway1"
             }
         }
     }
