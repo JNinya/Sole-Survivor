@@ -1,13 +1,13 @@
 {
     "states": {
-        "FIRST_TIME": true,
         "AWAKE": false,
+        "FIRST_TIME": true,
         "E_DOOR_LOCKED": false
     },
 
     "prompts": [
         {
-            "text": "Welcome to sole survivor! First you need to WAKE UP.",
+            "text": "You are employed by some government organization in deep space that has set up a biological research station on a planet with no star. They don't know how the planet exists: the planet is more geothermally active than any planet in the known universe, and the environment of the planet is similar to earth, but with no breathable air. The government has decided to call it Nocturne, and has established the Dead Star Research Station to understand the environment better. \n\nLast night, a catastrophic failure occurred in the station. \n\nYou just woke up.",
             "requirements": {
                 "AWAKE": false
             }
@@ -29,7 +29,7 @@
     ],
 
     "interactions": {
-        "Wake up": {
+        "Begin": {
             "requirements": {
                 "AWAKE": false
             },
@@ -46,6 +46,15 @@
             "updates": {
                 "FIRST_TIME": false,
                 "global.active_scene": "hallway1"
+            }
+        },
+
+        "Super secret option": {
+            "requirements": {
+                "global.POWER_ON": false
+            },
+            "updates": {
+
             }
         }
     }

@@ -8,7 +8,7 @@
 
     "prompts": [
         {
-            "text": "You are in the laboratory.",
+            "text": "You are in the laboratory. There is a door leading to the generator room and a door leading to the workshop. There is also a locked door leading to a stairwell.",
             "requirements": {
 
             }
@@ -16,7 +16,7 @@
     ],
 
     "interactions": {
-        "Go back to workshop": {
+        "Enter workshop": {
             "requirements": {
                 "E_BOTTOM_DOOR_LOCKED": false
             },

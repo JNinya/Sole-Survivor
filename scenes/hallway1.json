@@ -8,7 +8,7 @@
 
     "prompts": [
         {
-            "text": "You are in a hallway.",
+            "text": "You are in a hallway. It is connecting three rooms: the room you started in, a computer room, and a workshop. The facility continues through the workshop.",
             "requirements": {
 
             }
