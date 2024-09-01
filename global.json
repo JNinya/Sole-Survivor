@@ -1,6 +1,6 @@
 {
     "states": {
         "POWER_ON": false,
-        "THREAT_LEVEL": 3
+        "THREAT_LEVEL": 4
     }
 }

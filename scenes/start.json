@@ -47,15 +47,6 @@
                 "FIRST_TIME": false,
                 "global.active_scene": "hallway1"
             }
-        },
-
-        "Super secret option": {
-            "requirements": {
-                "global.POWER_ON": false
-            },
-            "updates": {
-
-            }
         }
     }
 }
