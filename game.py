@@ -11,8 +11,8 @@ SCENE_DIR: Final[str] = "scenes"
 
 #scenes = readScenes(SCENE_DIR)
 
-globalctx = GlobalContext(SCENE_DIR)
-globalctx.setActiveScene("start")
+globalctx = GlobalContext(SCENE_DIR, "global", "start")
+#globalctx.setActiveScene("start")
 
 
 

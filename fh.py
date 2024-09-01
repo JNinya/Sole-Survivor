@@ -8,14 +8,14 @@ write(filename, text)
 """
 
 # Returns the text of a text file
-def read(file_name):
+def read(file_name: str):
     file = open(file_name, "r", encoding="utf8")
     output = file.read()
     file.close()
     return output
 
 # Overwrites the text of a text file. Creates a new file if one doesn't exist
-def write(file_name, text):
+def write(file_name: str, text: str):
     file = open(file_name, "w", encoding="utf8")
     output = file.write(text)
     file.close()

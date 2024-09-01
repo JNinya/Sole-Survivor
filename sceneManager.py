@@ -75,7 +75,7 @@ class GlobalStateException(Exception):
 
 class GlobalContext:
     # scenes are either loaded or a directory name
-    def __init__(self, scenes_or_dir: dict[str, Scene] | str):
+    def __init__(self, scenes_or_dir: dict[str, Scene] | str, global_filename: str | None, starting_scene: str | None = None):
         self.scenes: dict[str, Scene] = None
         if isinstance(scenes_or_dir, dict):
             for scene in scenes_or_dir.values():
@@ -84,7 +84,18 @@ class GlobalContext:
         elif isinstance(scenes_or_dir, str):
             self.scenes = readScenes(scenes_or_dir, self)
 
+        global_filedata: JSONDict = None
+        if global_filename is not None:
+            # TODO: better error handling here
+            content = fh.read(f"{global_filename}.json")
+            global_filedata = json.loads(content)
+
+        self.states: JSONDict = global_filedata["states"] if global_filedata is not None else {}
+
         self.active_scene: Scene = None
+        if starting_scene is not None:
+            self.setActiveScene(starting_scene)
+        
 
     def setActiveScene(self, scene: Scene | str):
         actual_scene = None
@@ -104,7 +115,8 @@ class GlobalContext:
                 self.setActiveScene(cast(str, value))
 
             case _:
-                raise GlobalStateException(f"Unknown global state path to set ({state_path})")
+                self.states[state_path] = value
+                #raise GlobalStateException(f"Unknown global state path to set ({state_path})")
             
     def readGlobalState(self, state_path: str) -> object:
         match state_path:
@@ -112,7 +124,8 @@ class GlobalContext:
                 return self.active_scene.name
 
             case _:
-                raise GlobalStateException(f"Unknown global state path to read ({state_path})")
+                return self.states[state_path]
+                #raise GlobalStateException(f"Unknown global state path to read ({state_path})")
 
 # Returns boolean indicating whether the prompt meets state requirements
 def promptFitsState(prompt: Prompt, scene: Scene, globalctx: GlobalContext):
