@@ -1,0 +1,27 @@
+{
+    "states": {
+        "FIRST_TIME": true,
+        "N_DOOR_LOCKED": false
+    },
+
+    "prompts": [
+        {
+            "text": "You are in the generator.",
+            "requirements": {
+
+            }
+        }
+    ],
+
+    "interactions": {
+        "Go back to laboratory": {
+            "requirements": {
+                "N_DOOR_LOCKED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "laboratory"
+            }
+        }
+    }
+}

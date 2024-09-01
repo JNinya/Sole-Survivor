@@ -2,12 +2,13 @@
     "states": {
         "FIRST_TIME": true,
         "S_DOOR_LOCKED": false,
-        "W_DOOR_LOCKED": false
+        "E_TOP_DOOR_LOCKED": false,
+        "E_BOTTOM_DOOR_LOCKED": true
     },
 
     "prompts": [
         {
-            "text": "You are in the workshop.",
+            "text": "You are in the laboratory.",
             "requirements": {
 
             }
@@ -15,24 +16,23 @@
     ],
 
     "interactions": {
-        
-        "Enter laboratory": {
+        "Go back to workshop": {
             "requirements": {
-                "W_DOOR_LOCKED": false
+                "E_BOTTOM_DOOR_LOCKED": false
             },
             "updates": {
                 "FIRST_TIME": false,
-                "global.active_scene": "laboratory"
+                "global.active_scene": "workshop"
             }
         },
-        
-        "Leave workshop": {
+
+        "Enter generator room": {
             "requirements": {
                 "S_DOOR_LOCKED": false
             },
             "updates": {
                 "FIRST_TIME": false,
-                "global.active_scene": "hallway1"
+                "global.active_scene": "generator_room"
             }
         }
     }
