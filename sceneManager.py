@@ -100,7 +100,7 @@ class GlobalContext:
     # TODO: return old value after setting new?
     def setGlobalState(self, state_path: str, value: object):
         match state_path:
-            case "scene":
+            case "active_scene":
                 self.setActiveScene(cast(str, value))
 
             case _:
@@ -108,7 +108,7 @@ class GlobalContext:
             
     def readGlobalState(self, state_path: str) -> object:
         match state_path:
-            case "scene":
+            case "active_scene":
                 return self.active_scene.name
 
             case _:
