@@ -1,5 +1,6 @@
 import os
 import json
+from typing import cast
 import fh
 
 
@@ -60,16 +61,17 @@ class Scene:
         return None
 
     # Returns an array of interactions available based on current states
-    def nextInteractions(self):
-        interactions = {}
-        for interaction in self.interactions:
-            interact_data = self.interactions[interaction]
+    def nextInteractions(self) -> dict[str, Interaction]:
+        interactions: dict[str, Interaction] = {}
+        for name, interact_data in self.interactions.items():
             if interactionFitsState(interact_data, self, self.globalctx):
-                interactions[interaction] = interact_data
+                interactions[name] = interact_data
         return interactions
     
 # end def Scene
 
+class GlobalStateException(Exception):
+    pass
 
 class GlobalContext:
     # scenes are either loaded or a directory name
@@ -92,10 +94,25 @@ class GlobalContext:
             actual_scene = self.scenes[scene]
         
         if actual_scene is None:
-            raise ValueError("Warning") # TODO: change to warning for setting void scene
+            raise GlobalStateException("Requested scene to be active is None")
         self.active_scene = actual_scene
 
+    # TODO: return old value after setting new?
+    def setGlobalState(self, state_path: str, value: object):
+        match state_path:
+            case "scene":
+                self.setActiveScene(cast(str, value))
 
+            case _:
+                raise GlobalStateException(f"Unknown global state path to set ({state_path})")
+            
+    def readGlobalState(self, state_path: str) -> object:
+        match state_path:
+            case "scene":
+                return self.active_scene.name
+
+            case _:
+                raise GlobalStateException(f"Unknown global state path to read ({state_path})")
 
 # Returns boolean indicating whether the prompt meets state requirements
 def promptFitsState(prompt: Prompt, scene: Scene, globalctx: GlobalContext):
@@ -132,9 +149,9 @@ def readScenes(scenes_dir, globalctx: GlobalContext = None):
     return scene_map
 
 # Update game state based on interaction selected
-def updateStates(interaction, globalctx: GlobalContext):
-    for update in interaction["updates"]:
-        setState(update, interaction["updates"][update], globalctx)
+def updateStates(interaction: Interaction, globalctx: GlobalContext):
+    for state_path, update_val in interaction.updates.items():
+        setState(state_path, update_val, globalctx)
 
 # Get state value from local, scene, or global path
 # Examples: "global.scene", "lab_scene_3.LIGHTS_ON", "LIGHTS_ON"
@@ -148,7 +165,7 @@ def readState(state_path: str, globalctx: GlobalContext, active_scene: Scene = N
     if len(split_path) > 1:
         if split_path[0] == "global":
             # query global state
-            raise NotImplementedError("Need to query global state!")
+            return globalctx.readGlobalState(split_path[1])
         else:
             # query scene state
             return globalctx.scenes[split_path[0]].states[split_path[1]]
@@ -157,14 +174,14 @@ def readState(state_path: str, globalctx: GlobalContext, active_scene: Scene = N
         # local path
         return active_scene.states[state_path]
 
-def setState(state_path, value, globalctx: GlobalContext, active_scene: Scene = None):
+def setState(state_path: str, value: object, globalctx: GlobalContext, active_scene: Scene = None):
     active_scene = active_scene if active_scene is not None else globalctx.active_scene
     
     split_path = state_path.split(".")
     if len(split_path) > 1:
         if split_path[0] == "global":
             # set global state
-            raise NotImplementedError("Need to set global state!")
+            globalctx.setGlobalState(split_path[1], value)
         else:
             # set scene state
             globalctx.scenes[split_path[0]].states[split_path[1]] = value
