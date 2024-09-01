@@ -43,13 +43,23 @@ def printActiveScene():
 
 #activates interactions in current scene based on number input
 def interact(interaction_number):
+    
+    #the try/except/else block will handle any bad inputs because it will only run if a valid number choice is entered, otherwise it will just refresh the screen. If an error arrises at another point it will still allow that error through for debugging purposes
+    try:
+        interaction_number = int(interaction_number)
 
-    interaction_number = int(interaction_number)
+        #gets interactions that fit requirements
+        interactions_list = list(globalctx.active_scene.nextInteractions().values())
 
-    #gets interactions that fit requirements
-    interactions_list = list(globalctx.active_scene.nextInteractions().values())
+    except:
+        return None
+    
+    else:
+        if ((interaction_number > 0) and (interaction_number <= len(interactions_list))):
+            updateStates(interactions_list[interaction_number-1], globalctx)
+        else:
+            return None
 
-    updateStates(interactions_list[interaction_number-1], globalctx)
 
 
 
@@ -70,7 +80,7 @@ while True:
 #IDEAS
 
 """
-Add support for if the player inputs something other than a number or an out of range number
+DONE BY JACK!!!!!!!!!!!!! Add support for if the player inputs something other than a number or an out of range number
 impletment changing of states with global.active_state
 add support for math operators in interaction requirements
 """
