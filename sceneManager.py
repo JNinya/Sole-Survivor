@@ -130,7 +130,7 @@ class GlobalContext:
 # Returns boolean indicating whether the prompt meets state requirements
 def promptFitsState(prompt: Prompt, scene: Scene, globalctx: GlobalContext):
     for req_state_path in prompt.requirements.keys():
-        state_val = readState(req_state_path, globalctx.scenes, scene)
+        state_val = readState(req_state_path, globalctx, scene)
         if prompt.requirements[req_state_path] != state_val:
             return False
     return True
@@ -138,7 +138,7 @@ def promptFitsState(prompt: Prompt, scene: Scene, globalctx: GlobalContext):
 # Returns boolean indicating whether the interaction meets state requirements
 def interactionFitsState(interact: Interaction, scene: Scene, globalctx: GlobalContext):
     for req_state_path in interact.requirements.keys():
-        state_val = readState(req_state_path, globalctx.scenes, scene)
+        state_val = readState(req_state_path, globalctx, scene)
         if interact.requirements[req_state_path] != state_val:
             return False
     return True
