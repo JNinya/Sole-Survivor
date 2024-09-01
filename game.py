@@ -81,6 +81,6 @@ while True:
 
 """
 DONE BY JACK!!!!!!!!!!!!! Add support for if the player inputs something other than a number or an out of range number
-impletment changing of states with global.active_state
+impletment changing of states with global.active_scene
 add support for math operators in interaction requirements
 """

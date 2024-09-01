@@ -9,7 +9,7 @@
 
     "prompts": [
         {
-            "text": "Welcome to sole survivor!",
+            "text": "Welcome to sole survivor! Your goal is to escape the facility",
             "requirements": {
                 "FIRST_TIME": true
             }
