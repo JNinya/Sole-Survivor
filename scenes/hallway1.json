@@ -8,7 +8,7 @@
 
     "prompts": [
         {
-            "text": "You are in a hallway. It is connecting three rooms: the room you started in, a computer room, and a workshop. The facility continues through the workshop.",
+            "text": "You are in a hallway. It is also lit by emergency lighting. Something has happened with the power.\nIt is connecting three rooms: the room you started in, a computer room, and a workshop. The facility continues through the workshop.",
             "requirements": {
 
             }
@@ -36,7 +36,7 @@
             }
         },
 
-        "Continue ahead to the workshop": {
+        "Enter workshop": {
             "requirements": {
                 "N_DOOR_LOCKED": false
             },

@@ -35,7 +35,7 @@ def printActiveScene():
     #print prompt
     print(globalctx.active_scene.nextPrompt().text)
 
-    print("")
+    print("\n")
 
     #print interactions
     for i in range(len(interactions_list)):

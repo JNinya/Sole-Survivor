@@ -3,22 +3,49 @@
         "FIRST_TIME": true,
         "S_DOOR_LOCKED": false,
         "E_TOP_DOOR_LOCKED": false,
-        "E_BOTTOM_DOOR_LOCKED": false
+        "E_BOTTOM_DOOR_LOCKED": false,
+        "VIEWING_MAP": false
     },
 
     "prompts": [
         {
-            "text": "You are in the laboratory. There is a door leading to the generator room and a door leading to the workshop. There is also a locked door leading to a stairwell.",
+            "text": "You are in the laboratory. There is smashed laboratory equipment all around you. On the wall there is a map of the facility.\nThere is a door leading to the generator room and a door leading to the workshop. There is also a locked door leading to a stairwell.",
             "requirements": {
+                "VIEWING_MAP": false
+            }
+        },
 
+        {
+            "text": "FACILITY MAP:\n\n\n╔═════════════════╦══════════════════\n║                 ║      STAIRS\n║                   │ │ │ │ │ │ │ │ │\n║                 ║\n║   LABORATORY    ╠═════════════════╗\n║                 ║                 ║\n║                      WORKSHOP     ║\n║                 ║                 ║\n╠═══  ═══╦════════╩════════╦═══  ═══╣\n║        ║                 ║        ║\n║        ║                 ║        ║\n║ GENER- ║                 ║  Hall  ║\n║  ATOR  ║        ╔════════╣  -way  ╠════════╗\n║  ROOM  ║        ║        ║        ║COMPUTER║\n║        ║        ║  START             ROOM  ║\n║        ║        ║        ║        ║        ║\n╚════════╝        ╚════════╩════════╩════════╝",
+            "requirements": {
+                "VIEWING_MAP": true
             }
         }
     ],
 
     "interactions": {
+        "View map": {
+            "requirements": {
+                "VIEWING_MAP": false
+            },
+            "updates": {
+                "VIEWING_MAP": true
+            }
+        },
+
+        "Exit map": {
+            "requirements": {
+                "VIEWING_MAP": true
+            },
+            "updates": {
+                "VIEWING_MAP": false
+            }
+        },
+        
         "Enter workshop": {
             "requirements": {
-                "E_BOTTOM_DOOR_LOCKED": false
+                "E_BOTTOM_DOOR_LOCKED": false,
+                "VIEWING_MAP": false
             },
             "updates": {
                 "FIRST_TIME": false,
@@ -28,7 +55,8 @@
 
         "Enter generator room": {
             "requirements": {
-                "S_DOOR_LOCKED": false
+                "S_DOOR_LOCKED": false,
+                "VIEWING_MAP": false
             },
             "updates": {
                 "FIRST_TIME": false,

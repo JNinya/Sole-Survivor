@@ -6,14 +6,30 @@
 
     "prompts": [
         {
-            "text": "You are in the generator!!!!!1!!!!",
+            "text": "You are in the generator room. In here you can activate the emergency generator. It will provide power to only the essentials.",
             "requirements": {
+                "global.POWER_ON": false
+            }
+        },
 
+        {
+            "text": "You are in the generator room. The emergency generator is running.",
+            "requirements": {
+                "global.POWER_ON": true
             }
         }
     ],
 
     "interactions": {
+        "Activate emergency generator": {
+            "requirements": {
+                "global.POWER_ON": false
+            },
+            "updates": {
+                "global.POWER_ON": true
+            }
+        },
+        
         "Go back to laboratory": {
             "requirements": {
                 "N_DOOR_LOCKED": false

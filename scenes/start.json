@@ -7,14 +7,14 @@
 
     "prompts": [
         {
-            "text": "You are employed by some government organization in deep space that has set up a biological research station on a planet with no star. They don't know how the planet exists: the planet is more geothermally active than any planet in the known universe, and the environment of the planet is similar to earth, but with no breathable air. The government has decided to call it Nocturne, and has established the Dead Star Research Station to understand the environment better. \n\nLast night, a catastrophic failure occurred in the station. \n\nYou just woke up.",
+            "text": "You are a xenobiologist on a research station.",
             "requirements": {
                 "AWAKE": false
             }
         },
         
         {
-            "text": "Your goal is to escape the facility.",
+            "text": "The walls are pounding.\n\nYour eyes flutter open and soak in your surroundings. It is quiet. Too quiet. The familiar mechanical whir of the machinery nearby is missing. A dim red glow from an emergency lighting fixture illuminates the room.\n\nEmergency lights? Oh god.\n\nYou rise. You blacked out for some time. Your throbbing headache answers the question for you. You went hypoxic. Something made the station lose oxygen temporarily.",
             "requirements": {
                 "FIRST_TIME": true
             }
@@ -29,7 +29,7 @@
     ],
 
     "interactions": {
-        "Begin": {
+        "Wake up": {
             "requirements": {
                 "AWAKE": false
             },

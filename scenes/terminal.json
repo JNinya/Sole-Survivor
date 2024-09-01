@@ -1,0 +1,41 @@
+{
+    "states": {
+        "W_DOOR_LOCKED": false
+    },
+
+    "prompts": [
+        {
+            "text": "The computer screen is black and doesnt respond to any presses on the keyboard. It seems like the power is out.",
+            "requirements": {
+                "global.POWER_ON": false
+            }
+        },
+        
+        {
+            "text": "WELCOME TO FACILITY-TERMINAL v0.0.1-alpha\n\nFACILITY STATUS:\nPOWER - OFFLINE\n\nENTER COMMAND:",
+            "requirements": {
+                "global.POWER_ON": true
+            }
+        }
+    ],
+
+    "interactions": {
+        "Reboot system": {
+            "requirements": {
+                "global.POWER_ON": true
+            },
+            "updates": {
+
+            }
+        },
+
+        "Exit": {
+            "requirements": {
+
+            },
+            "updates": {
+                "global.active_scene": "computer_room"
+            }
+        }
+    }
+}
