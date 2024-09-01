@@ -1,11 +1,3 @@
-"""
-Functions:
-
-readscene(scenes_dir, scene_name)
-readscenes(scenes_dir)
-
-"""
-
 import os
 import json
 import fh
@@ -16,26 +8,40 @@ class GlobalContext():
     pass
 
 
-# TODO: determine whether this is necessary/wanted
+type JSONDict = dict[str, object]
+
+class Interaction:
+    def __init__(self, name: str, data: JSONDict):
+        self.name: str = name
+        self.requirements: JSONDict = data["requirements"]
+        self.updates: JSONDict = data["updates"]
+
+    def __str__(self):
+        return f"Name: {self.name}\nRequirements: {self.requirements}\nUpdates: {self.updates}"
+
 class Prompt:
-    def __init__(self, prompts_dict):
-        self.text = prompts_dict["text"]
-        self.requirements = prompts_dict["requirements"]
+    def __init__(self, prompts_dict: JSONDict):
+        self.text: str = prompts_dict["text"]
+        self.requirements: JSONDict = prompts_dict["requirements"]
 
     def __str__(self):
         return f"Text: {self.text}\nRequirements: {self.requirements}"
 
 class Scene:
-    def __init__(self, name: str, json_dict: dict, globalctx: GlobalContext = None):
+    def __init__(self, name: str, json_dict: JSONDict, globalctx: GlobalContext = None):
         self.globalctx: GlobalContext = globalctx
 
         self.name: str = name.replace(".json", "")
         self.states = json_dict["states"]
-        self.interactions = json_dict["interactions"]
         
-        self.prompts = json_dict["prompts"]
-        #for json_prompt in json_dict["prompts"]:
-        #    self.prompts.append(Prompt(json_prompt))
+        #self.interactions = json_dict["interactions"]
+        self.interactions: dict[str, Interaction] = {}
+        for name, data in json_dict["interactions"].items():
+            self.interactions[name] = Interaction(name, data)
+        
+        self.prompts: list[Prompt] = []
+        for json_prompt in json_dict["prompts"]:
+            self.prompts.append(Prompt(json_prompt))
 
         self.adjacent_scenes = json_dict.get("adjacent_scenes", None)
     
@@ -63,39 +69,18 @@ class Scene:
         return interactions
     
 # end def Scene
-"""
+
+
 class GlobalContext:
     # scenes are either loaded or a directory name
-    def __init__(self, scenes: dict[str, Scene] | str):
-        if isinstance(scenes, dict[str, Scene]):
-            for scene in scenes.values():
+    def __init__(self, scenes_or_dir: dict[str, Scene] | str):
+        self.scenes: dict[str, Scene] = None
+        if isinstance(scenes_or_dir, dict):
+            for scene in scenes_or_dir.values():
                 scene.globalctx = self
-            self.scenes = scenes
-        elif isinstance(scenes, str):
-            self.scenes = readScenes(scenes)
-
-        self.active_scene: Scene = None
-
-    def setActiveScene(self, scene: Scene | str):
-        actual_scene = None
-        if isinstance(scene, Scene):
-            actual_scene = scene
-        elif isinstance(scene, str):
-            actual_scene = self.scenes[scene]
-        
-        if actual_scene is None:
-            raise ValueError("Warning") # TODO: change to warning for setting void scene
-        self.active_scene = actual_scene
-"""
-class GlobalContext:
-    # scenes are either loaded or a directory name
-    def __init__(self, scenes: dict[str, Scene] | str): # TODO: change supported type for scenes in ctor
-        if isinstance(scenes, dict):
-            for scene in scenes.values():
-                scene.globalctx = self
-            self.scenes = scenes
-        elif isinstance(scenes, str):
-            self.scenes = readScenes(scenes)
+            self.scenes = scenes_or_dir
+        elif isinstance(scenes_or_dir, str):
+            self.scenes = readScenes(scenes_or_dir, self)
 
         self.active_scene: Scene = None
 
@@ -113,37 +98,36 @@ class GlobalContext:
 
 
 # Returns boolean indicating whether the prompt meets state requirements
-def promptFitsState(prompt, scene, globalctx: GlobalContext):
-    for req_state in prompt["requirements"]:
-        state_val = readState(req_state, globalctx.scenes, scene)
-        #print(req_state, prompt["requirements"][req_state], state_val) # DEBUG
-        if prompt["requirements"][req_state] != state_val:
+def promptFitsState(prompt: Prompt, scene: Scene, globalctx: GlobalContext):
+    for req_state_path in prompt.requirements.keys():
+        state_val = readState(req_state_path, globalctx.scenes, scene)
+        if prompt.requirements[req_state_path] != state_val:
             return False
     return True
 
 # Returns boolean indicating whether the interaction meets state requirements
-def interactionFitsState(interact_data, scene, globalctx: GlobalContext):
-    for req_state in interact_data["requirements"]:
-        state_val = readState(req_state, globalctx.scenes, scene)
-        if interact_data["requirements"][req_state] != state_val:
+def interactionFitsState(interact: Interaction, scene: Scene, globalctx: GlobalContext):
+    for req_state_path in interact.requirements.keys():
+        state_val = readState(req_state_path, globalctx.scenes, scene)
+        if interact.requirements[req_state_path] != state_val:
             return False
     return True
 
 # Read scene file as scene object
-def readScene(scenes_dir, scene_name):
+def readScene(scenes_dir: str, scene_name: str, globalctx: GlobalContext = None):
     raw_text = fh.read(f"{scenes_dir}/{scene_name}")
     json_dict = json.loads(raw_text)
-    scene = Scene(scene_name, json_dict)
+    scene = Scene(scene_name, json_dict, globalctx)
 
     return scene
 
 
 # Read all scenes in a directory into a map of string keys (scene names) and scene values (scene data)
-def readScenes(scenes_dir):
+def readScenes(scenes_dir, globalctx: GlobalContext = None):
     scene_map = {}
     for file in os.listdir(scenes_dir):
         if file.endswith(".json"):
-            scene_map[file.replace(".json", "")] = readScene(scenes_dir, file)
+            scene_map[file.replace(".json", "")] = readScene(scenes_dir, file, globalctx)
 
     return scene_map
 
@@ -188,7 +172,6 @@ def setState(state_path, value, globalctx: GlobalContext, active_scene: Scene = 
     else:
         # local path
         active_scene.states[state_path] = value
-
 
 """
 # Debug/Testing

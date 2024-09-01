@@ -1,16 +1,17 @@
 import os
+from typing import Final
 from sceneManager import *
 
 
 #SETUP
 
 #from coloredText import *
-directory_of_scene_files = "scenes"
-#define variable 'scenes' as a dictionary of all the scenes in specified directory
-scenes = readScenes(directory_of_scene_files)
-#initiate GlobalContext object using the dictionary of scenes
-globalctx = GlobalContext(scenes)
-#set the active scene of globalctx
+
+SCENE_DIR: Final[str] = "scenes"
+
+#scenes = readScenes(SCENE_DIR)
+
+globalctx = GlobalContext(SCENE_DIR)
 globalctx.setActiveScene("start")
 
 
@@ -32,7 +33,7 @@ def printActiveScene():
     interactions_list = list(globalctx.active_scene.nextInteractions().keys())
 
     #print prompt
-    print(globalctx.active_scene.nextPrompt()["text"])
+    print(globalctx.active_scene.nextPrompt().text)
 
     print("")
 
@@ -44,7 +45,9 @@ def printActiveScene():
 #activates interactions in current scene based on number input
 def interact(interaction_number):
     
-    #the try/except/else block will handle any bad inputs because it will only run if a valid number choice is entered, otherwise it will just refresh the screen. If an error arrises at another point it will still allow that error through for debugging purposes
+    # the try/except/else block will handle any bad inputs because it will only run if a valid number choice is entered,
+    # otherwise it will just refresh the screen. If an error arises at another point 
+    # it will still allow that error through for debugging purposes
     try:
         interaction_number = int(interaction_number)
 
