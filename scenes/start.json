@@ -53,9 +53,5 @@
                 "global.active_scene": "first_scene"
             }
         }
-    },
-
-    "adjacent_scenes": {
-
     }
 }
