@@ -3,7 +3,7 @@
         "FIRST_TIME": true,
         "S_DOOR_LOCKED": false,
         "E_TOP_DOOR_LOCKED": false,
-        "E_BOTTOM_DOOR_LOCKED": true
+        "E_BOTTOM_DOOR_LOCKED": false
     },
 
     "prompts": [
