@@ -4,5 +4,8 @@
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+build/
+dist/
 *.py[cod]
 *$py.class
+game.spec
