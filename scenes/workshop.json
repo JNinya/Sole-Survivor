@@ -1,24 +1,48 @@
 {
     "states": {
-        "FIRST_TIME": true,
-        "S_DOOR_LOCKED": false,
-        "W_DOOR_LOCKED": false
+        "FIRST_TIME": true
     },
 
     "prompts": [
         {
+            "text": "You are in the workshop. You look around and realize that there are plenty of parts and electrical components. You can probably create a makeshift pump to drain the stairs.",
+            "requirements": {
+                "global.STAIRS_VISITED": true,
+                "global.HAS_PUMP": false
+            }
+        },
+
+        {
+            "text": "You are in the workshop. You have a makeshift pump.",
+            "requirements": {
+                "global.STAIRS_VISITED": true,
+                "global.HAS_PUMP": true
+            }
+        },
+        
+        {
             "text": "You are in the workshop.",
             "requirements": {
-
+                "global.STAIRS_VISITED": false
             }
         }
     ],
 
     "interactions": {
         
+        "Make pump": {
+            "requirements": {
+                "global.STAIRS_VISITED": true,
+                "global.HAS_PUMP": false
+            },
+            "updates": {
+                "global.HAS_PUMP": true
+            }
+        },
+        
         "Enter laboratory": {
             "requirements": {
-                "W_DOOR_LOCKED": false
+
             },
             "updates": {
                 "FIRST_TIME": false,
@@ -28,7 +52,7 @@
         
         "Enter hallway": {
             "requirements": {
-                "S_DOOR_LOCKED": false
+
             },
             "updates": {
                 "FIRST_TIME": false,

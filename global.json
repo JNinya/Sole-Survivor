@@ -1,6 +1,9 @@
 {
     "states": {
         "POWER_ON": false,
-        "THREAT_LEVEL": 4
+        "STAIR_DOOR_LOCKED": true,
+        "STAIRS_VISITED": false,
+        "HAS_PUMP": false,
+        "STAIRS_DRAINED": false
     }
 }

@@ -1,0 +1,91 @@
+{
+    "states": {
+        "FIRST_TIME": true,
+        "FIRST_TIME_AFTER_UNLOCKING_DOOR": true
+    },
+
+    "prompts": [
+        {
+            "text": "You use the pump and drain the liquid from the stairs. You are able to go down the stairs and escape through the escape ship.\n\nYOU WIN!",
+            "requirements": {
+                "global.STAIRS_DRAINED": true
+            }
+        },
+        
+        {
+            "text": "You are back in the flooded stairwell. You can use the pump you created to drain the liquid.",
+            "requirements": {
+                "global.HAS_PUMP": true
+            }
+        },
+        
+        {
+            "text": "You are able to enter the stairwell now that it is unlocked. Immediatly upon entering you are struck with a pungent, metallic, iron-like smell. In the dim emergency lighting you are able to see that the path down the stairs is blocked. It is flooded with some liquid. The liquid seems to be an opaque red color, although that appearance may just be due to the glow from the red emergency lighting. You must find a way past the flooding.",
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": false,
+                "global.STAIRS_VISITED": false
+            }
+        },
+
+        {
+            "text": "You are back in the flooded stairwell. The strange liquid is still there",
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": false,
+                "global.STAIRS_VISITED": true,
+                "global.HAS_PUMP": false
+            }
+        },
+        
+        {
+            "text": "The door to the stairwell is locked. You try to open it manually but it doesn't budge. The electronic lock can only be opened remotely. If you can get through this door to the stairs, you can escape the facility.",
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": true,
+                "FIRST_TIME": true
+            }
+        },
+
+        {
+            "text": "The door to the stairwell is locked. The electronic lock can only be opened remotely. If you can get through this door to the stairs, you can escape the facility.",
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": true,
+                "FIRST_TIME": false
+            }
+        }
+    ],
+
+    "interactions": {
+        "Use pump to drain stairs": {
+            "requirements": {
+                "global.HAS_PUMP": true,
+                "global.STAIRS_DRAINED": false
+            },
+            "updates": {
+                "global.STAIRS_DRAINED": true
+            }
+        },
+        
+        "Enter laboratory": {
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": false,
+                "global.STAIRS_DRAINED": false
+            },
+            "updates": {
+                "global.STAIRS_VISITED": true,
+                "global.active_scene": "laboratory"
+            }
+        },
+
+        "Exit": {
+            "requirements": {
+                "global.STAIR_DOOR_LOCKED": true,
+                "global.STAIRS_DRAINED": false
+            },
+            "updates": {
+                "FIRST_TIME": false,
+                "global.active_scene": "laboratory"
+            }
+        }
+
+
+    }
+}

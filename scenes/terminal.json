@@ -12,24 +12,34 @@
         },
         
         {
-            "text": "WELCOME TO FACILITY-TERMINAL v0.0.1-alpha\n\nFACILITY STATUS:\nPOWER - OFFLINE\n\nENTER COMMAND:",
+            "text": "WELCOME TO FACILITY-TERMINAL v0.0.1-alpha\n\nFACILITY STATUS:\nPRIMARY_POWER - OFFLINE\nBACKUP_POWER - ONLINE\nSECURITY_DOORS - LOCKED\nENTER COMMAND:",
             "requirements": {
-                "global.POWER_ON": true
+                "global.POWER_ON": true,
+                "global.STAIR_DOOR_LOCKED": true
+            }
+        },
+
+        {
+            "text": "WELCOME TO FACILITY-TERMINAL v0.0.1-alpha\n\nFACILITY STATUS:\nPRIMARY_POWER - OFFLINE\nBACKUP_POWER - ONLINE\nSECURITY_DOORS - UNLOCKED\nENTER COMMAND:",
+            "requirements": {
+                "global.POWER_ON": true,
+                "global.STAIR_DOOR_LOCKED": false
             }
         }
     ],
 
     "interactions": {
-        "Reboot system": {
+        "UNLOCK SECURITY DOORS": {
             "requirements": {
-                "global.POWER_ON": true
+                "global.POWER_ON": true,
+                "global.STAIR_DOOR_LOCKED": true
             },
             "updates": {
-
+                "global.STAIR_DOOR_LOCKED": false
             }
         },
 
-        "Exit": {
+        "EXIT": {
             "requirements": {
 
             },
