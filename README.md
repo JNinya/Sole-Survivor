@@ -8,8 +8,8 @@ or epicc gam wuz mad byyyy el jacque and el gabo
 
 
 Feature ideas:
-- ability to edit states in scenes other than the active scene
-- ability to specify text files as contents of prompt text
+- math evaluation for states (>, <, >=, <=, etc.)
+- ability to specify text files as contents of prompt text ("text" or "text_file" attributes)
 
 
 

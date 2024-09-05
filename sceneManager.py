@@ -35,7 +35,6 @@ class Scene:
         self.name: str = name.replace(".json", "")
         self.states = json_dict["states"]
         
-        #self.interactions = json_dict["interactions"]
         self.interactions: dict[str, Interaction] = {}
         for name, data in json_dict["interactions"].items():
             self.interactions[name] = Interaction(name, data)
